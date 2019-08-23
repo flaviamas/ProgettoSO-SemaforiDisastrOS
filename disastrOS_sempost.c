@@ -8,4 +8,17 @@
 
 void internal_semPost(){
   // do stuff :)
+      int fd = running->syscall_args[0];
+    SemDescriptor * desc = SemDescriptorList_byFd(&running->sem_descriptors,fd);
+
+    Semaphore * sem = desc->semaphore;
+
+
+    if(sem->count < 0) {
+
+    }
+    sem->count+=1;
+    running->syscall_retvalue = 0;
+    return;
+
 }

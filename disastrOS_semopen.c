@@ -34,7 +34,6 @@ void internal_semOpen(){
 
     SemDescriptorPtr * ptr = SemDescriptorPtr_alloc(desc);
     if(ptr) perror("error in the allocation of the sem desc ptr");
-
     desc->ptr = ptr;
     List_insert(&sem->descriptors, sem->descriptors.last, (ListItem*) ptr);
     running->syscall_retvalue = desc->fd;
