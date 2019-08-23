@@ -89,7 +89,6 @@ void SemDescriptorList_print(ListHead* l){
   printf("]");
 }
 
-
 void SemDescriptorPtrList_print(ListHead* l){
   ListItem* aux=l->first;
   printf("[");
