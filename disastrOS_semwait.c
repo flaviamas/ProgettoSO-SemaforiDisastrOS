@@ -22,9 +22,8 @@ void internal_semWait(){
         List_detach(&sem->descriptors,(ListItem*) ptr);
         List_insert(&sem->waiting_descriptors,sem->waiting_descriptors.last,(ListItem*) ptr);
         running->status = Waiting;
-        PCB * process;
         List_insert(&waiting_list, waiting_list.last,(ListItem*) running);
-        process = (PCB*)List_detach(&ready_list,(ListItem*)ready_list.first);
+        PCB *process = (PCB*)List_detach(&ready_list,(ListItem*)ready_list.first);
     }
     running->syscall_retvalue = 0;
     return;
