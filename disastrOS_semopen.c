@@ -11,16 +11,18 @@
 
 void internal_semOpen(){
     // do stuff :)
-    int id = running->syscall_args[0]; //utilizzo syscall perché è la struttura dati adatta a contenere i valori relativi ad una syscall
+    int id = running->syscall_args[0];
     int count = running->syscall_args[1];
 
     Semaphore* sem = SemaphoreList_byId(&semaphores_list,id);
     if(sem == 0) {
         printf("SONO NELL'IF\n");
         sem = Semaphore_alloc(id,count);
+        printf("Allocato\n");
         if(sem == 0) {
             printf("ALLOCAZIONE FALLITA");
             running->syscall_retvalue = DSOS_ERSEMOPEN;
+            return;
         }
         List_insert(&semaphores_list,semaphores_list.last,(ListItem *) sem);
 

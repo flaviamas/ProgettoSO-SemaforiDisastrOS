@@ -43,6 +43,10 @@ int consumer = disastrOS_semOpen(CONSUMER_ID,0);
 //int producer = disastrOS_semOpen(PRODUCER_ID,BUFF_SIZE);
 
 
+
+
+
+
  /*for(int i=0; i<BUFF_SIZE*2; i++){
 
     if(i%2==0)  f_producer(consumer,producer);
