@@ -8,19 +8,17 @@
 #define PRODUCER_ID 1
 #define CONSUMER_ID 2
 
-int test;
-
 void f_producer(int consumer,int producer){
-    disastrOS_semWait(producer);
-    test++;
-    disastrOS_semPost(consumer);
+    //disastrOS_semWait(producer);
+    //test++;
+    //disastrOS_semPost(consumer);
 
 }
 
 void f_consumer(int consumer,int producer){
-    disastrOS_semWait(consumer);
-    test--;
-    disastrOS_semPost(producer);
+    //disastrOS_semWait(consumer);
+    //test--;
+    //disastrOS_semPost(producer);
 
 }
 
@@ -40,19 +38,19 @@ void childFunction(void* args){
   int mode=0;
   int fd=disastrOS_openResource(disastrOS_getpid(),type,mode);
   printf("fd=%d\n", fd);
+printf("Apro i semafori\n");
+int consumer = disastrOS_semOpen(CONSUMER_ID,0);
+//int producer = disastrOS_semOpen(PRODUCER_ID,BUFF_SIZE);
 
- int consumer = disastrOS_semOpen(CONSUMER_ID,0);
- int producer = disastrOS_semOpen(PRODUCER_ID,BUFF_SIZE);
- test = 0;
 
- for(int i=0; i<BUFF_SIZE*2; i++){
+ /*for(int i=0; i<BUFF_SIZE*2; i++){
 
     if(i%2==0)  f_producer(consumer,producer);
     else f_consumer(consumer,producer);
-}
+}*/
 
 
-  printf("Sono il processo %d, e la mia variabile test e' %d",disastrOS_getpid(),test);
+  printf("Sono il processo %d, e la mia variabile test ",disastrOS_getpid());
   printf("PID: %d, terminating\n", disastrOS_getpid());
 
   for (int i=0; i<(disastrOS_getpid()+1); ++i){
@@ -60,6 +58,8 @@ void childFunction(void* args){
 
     disastrOS_sleep((20-disastrOS_getpid())*5);
   }
+  //disastrOS_semClose(producer);
+  //disastrOS_semClose(consumer);
   disastrOS_exit(disastrOS_getpid()+1);
 }
 

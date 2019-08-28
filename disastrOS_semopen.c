@@ -7,6 +7,7 @@
 #include "disastrOS_semaphore.h"
 #include "disastrOS_semdescriptor.h"
 #include "disastrOS_globals.h"
+#include "disastrOS_constants.h"
 
 void internal_semOpen(){
     // do stuff :)
@@ -14,8 +15,13 @@ void internal_semOpen(){
     int count = running->syscall_args[1];
 
     Semaphore* sem = SemaphoreList_byId(&semaphores_list,id);
-    if(!sem) {  //non ho trovato il semaforo nella lista, lo posso creare e inserire nella lista
+    if(sem == 0) {
+        printf("SONO NELL'IF\n");
         sem = Semaphore_alloc(id,count);
+        if(sem == 0) {
+            printf("ALLOCAZIONE FALLITA");
+            running->syscall_retvalue = DSOS_ERSEMOPEN;
+        }
         List_insert(&semaphores_list,semaphores_list.last,(ListItem *) sem);
 
     }
