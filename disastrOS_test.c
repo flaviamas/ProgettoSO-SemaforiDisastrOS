@@ -40,18 +40,18 @@ void childFunction(void* args){
   printf("fd=%d\n", fd);
 printf("Apro i semafori\n");
 int consumer = disastrOS_semOpen(CONSUMER_ID,0);
-//int producer = disastrOS_semOpen(PRODUCER_ID,BUFF_SIZE);
+int producer = disastrOS_semOpen(PRODUCER_ID,BUFF_SIZE);
 
 
 
 
 
 
- /*for(int i=0; i<BUFF_SIZE*2; i++){
+ for(int i=0; i<BUFF_SIZE*2; i++){
 
     if(i%2==0)  f_producer(consumer,producer);
     else f_consumer(consumer,producer);
-}*/
+}
 
 
   printf("Sono il processo %d, e la mia variabile test ",disastrOS_getpid());
@@ -62,8 +62,8 @@ int consumer = disastrOS_semOpen(CONSUMER_ID,0);
 
     disastrOS_sleep((20-disastrOS_getpid())*5);
   }
-  //disastrOS_semClose(producer);
-  //disastrOS_semClose(consumer);
+  disastrOS_semClose(producer);
+  disastrOS_semClose(consumer);
   disastrOS_exit(disastrOS_getpid()+1);
 }
 
