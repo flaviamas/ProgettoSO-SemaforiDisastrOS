@@ -9,16 +9,16 @@
 #define CONSUMER_ID 2
 
 void f_producer(int consumer,int producer){
-    //disastrOS_semWait(producer);
-    //test++;
-    //disastrOS_semPost(consumer);
+    disastrOS_semWait(producer);
+    printf("PRODUCO\n");;
+    disastrOS_semPost(consumer);
 
 }
 
 void f_consumer(int consumer,int producer){
-    //disastrOS_semWait(consumer);
-    //test--;
-    //disastrOS_semPost(producer);
+    disastrOS_semWait(consumer);
+    printf("CONSUMO\n");
+    disastrOS_semPost(producer);
 
 }
 

@@ -10,9 +10,9 @@ void internal_semWait(){
     int fd = running->syscall_args[0];
     SemDescriptor * desc = SemDescriptorList_byFd(&running->sem_descriptors,fd);
     if (desc == NULL){
-    running->syscall_retvalue = DSOS_ERESOURCENOFD;
-    perror("Error, semaphore not owned by the Application");
-    return;
+        running->syscall_retvalue = DSOS_ERESOURCENOFD;
+        printf("Error, semaphore not owned by the Application\n");
+        return;
     }
     Semaphore * sem = desc->semaphore;
     SemDescriptorPtr * ptr = desc->ptr;
