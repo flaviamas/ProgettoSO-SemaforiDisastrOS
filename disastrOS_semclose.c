@@ -14,7 +14,7 @@ void internal_semClose(){
 
     if (!desc){
         running->syscall_retvalue = DSOS_ERESOURCENOFD ;
-        perror("Error, semaphore not owned by the Application");
+        perror("Error, semaphore Descriptor not found\n");
         return;
         }
 
@@ -26,8 +26,8 @@ void internal_semClose(){
 
 
     if (!ptr){
-        running->syscall_retvalue = DSOS_ERESOURCENOFD ;
-        perror("Error, semaphore not owned by the Application");
+        running->syscall_retvalue = DSOS_ER_DETACH;
+        perror("Error, semaphore descriptor not detached \n");
         return;
         }
         if(sem->descriptors.size == 0 && sem->waiting_descriptors.size == 0){
@@ -36,6 +36,11 @@ void internal_semClose(){
         }
 
   int ret = SemDescriptorPtr_free(ptr);
+  if(ret){
+      running->syscall_retvalue = DSOS_ER_FREE;
+      printf("Free Error\n");
+      return;
+  }
 
     ret = SemDescriptor_free(desc); //libero la memoria del descrittore
 

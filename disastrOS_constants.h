@@ -30,6 +30,8 @@
 #define DSOS_ERESOURCEINUSE -13
 #define DSOS_ERSEMOPEN -14
 #define DSOS_ERSEMCLOSE -15
+#define DSOS_ER_FREE -16
+#define DSOS_ER_DETACH -17
 
 
 // syscall numbers

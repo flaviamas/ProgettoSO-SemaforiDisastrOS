@@ -1,4 +1,4 @@
-#include <stdio.h>
+ #include <stdio.h>
 #include <unistd.h>
 #include <poll.h>
 
@@ -7,17 +7,24 @@
 #define BUFF_SIZE 50
 #define PRODUCER_ID 1
 #define CONSUMER_ID 2
+#define WRITE_ID 3
+#define READ_ID 4
 
-void f_producer(int consumer,int producer){
+void f_producer(int consumer,int producer,int read, int write){
+
     disastrOS_semWait(producer);
-    printf("PRODUCO\n");;
+    disastrOS_semWait(write);
+    printf("PRODUCO\n");
+    disastrOS_semPost(write);
     disastrOS_semPost(consumer);
 
 }
 
-void f_consumer(int consumer,int producer){
+void f_consumer(int consumer,int producer, int read, int write){
     disastrOS_semWait(consumer);
+    disastrOS_semWait(read);
     printf("CONSUMO\n");
+    disastrOS_semPost(read);
     disastrOS_semPost(producer);
 
 }
@@ -41,16 +48,16 @@ void childFunction(void* args){
 printf("Apro i semafori\n");
 int consumer = disastrOS_semOpen(CONSUMER_ID,0);
 int producer = disastrOS_semOpen(PRODUCER_ID,BUFF_SIZE);
-
-
+int read = disastrOS_semOpen(READ_ID,1);
+int write = disastrOS_semOpen(WRITE_ID,1);
 
 
 
 
  for(int i=0; i<BUFF_SIZE*2; i++){
 
-    if(i%2==0)  f_producer(consumer,producer);
-    else f_consumer(consumer,producer);
+    if(i%2==0)  f_producer(consumer,producer,read,write);
+    else f_consumer(consumer,producer,read,write);
 }
 
 
@@ -64,6 +71,8 @@ int producer = disastrOS_semOpen(PRODUCER_ID,BUFF_SIZE);
   }
   disastrOS_semClose(producer);
   disastrOS_semClose(consumer);
+  disastrOS_semClose(read);
+  disastrOS_semClose(write);
   disastrOS_exit(disastrOS_getpid()+1);
 }
 
