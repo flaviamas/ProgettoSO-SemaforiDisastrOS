@@ -4,18 +4,24 @@
 
 #include "disastrOS.h"
 
-#define BUFF_SIZE 50
+#define BUFF_SIZE 20
 #define ITERATION  10
 #define PRODUCER_ID 1
 #define CONSUMER_ID 2
 #define WRITE_ID 3
 #define READ_ID 4
-
+int buffer[BUFF_SIZE];
+int write_idx = 0;
+int read_idx = 0;
+int count  = 1;
 void f_producer(int consumer,int producer,int read, int write){
 
     disastrOS_semWait(producer);
     disastrOS_semWait(write);
-    printf("PRODUCO\n");
+    printf("PRODUCO %d NELLA CELLA %d\n",count,write_idx);
+    buffer [write_idx] = count;
+    count ++;
+    write_idx = (write_idx+1)%BUFF_SIZE;
     disastrOS_semPost(write);
     disastrOS_semPost(consumer);
 
@@ -24,7 +30,11 @@ void f_producer(int consumer,int producer,int read, int write){
 void f_consumer(int consumer,int producer, int read, int write){
     disastrOS_semWait(consumer);
     disastrOS_semWait(read);
-    printf("CONSUMO\n");
+    int var  = buffer[read_idx];
+
+    printf("LEGGO %d NELLA CELLA %d\n",var,read_idx);
+    read_idx = (read_idx+1) %BUFF_SIZE;
+
     disastrOS_semPost(read);
     disastrOS_semPost(producer);
 
@@ -57,7 +67,7 @@ int write = disastrOS_semOpen(WRITE_ID,1);
 
  for(int i=0; i<ITERATION; i++){
 
-    if(i%2==0)  f_producer(consumer,producer,read,write);
+    if(disastrOS_getpid()%2==0)  f_producer(consumer,producer,read,write);
     else f_consumer(consumer,producer,read,write);
 }
 
@@ -67,7 +77,7 @@ int write = disastrOS_semOpen(WRITE_ID,1);
   for (int i=0; i<(disastrOS_getpid()+1); ++i){
     printf("PID: %d, iterate %d\n", disastrOS_getpid(), i);
 
-    disastrOS_sleep((20-disastrOS_getpid())*5);
+    disastrOS_sleep(20);
   }
   disastrOS_semClose(producer);
   disastrOS_semClose(consumer);
@@ -87,7 +97,7 @@ void initFunction(void* args) {
 
   printf("I feel like to spawn 10 nice threads\n");
   int alive_children=0;
-  for (int i=0; i<10; ++i) {
+  for (int i=0; i<3; ++i) {
     int type=0;
     int mode=DSOS_CREATE;
     printf("mode: %d\n", mode);
@@ -98,6 +108,7 @@ void initFunction(void* args) {
     alive_children++;
   }
 
+
   disastrOS_printStatus();
   int retval;
   int pid;
@@ -106,7 +117,11 @@ void initFunction(void* args) {
     printf("initFunction, child: %d terminated, retval:%d, alive: %d \n",
 	   pid, retval, alive_children);
     --alive_children;
-  }
+  }  for(int i = 0; i < BUFF_SIZE; i++)
+    printf("%d\t",buffer[i]);
+
+
+
   printf("shutdown!");
   disastrOS_shutdown();
 }
