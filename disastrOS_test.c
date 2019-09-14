@@ -5,6 +5,7 @@
 #include "disastrOS.h"
 
 #define BUFF_SIZE 50
+#define ITERATION  10
 #define PRODUCER_ID 1
 #define CONSUMER_ID 2
 #define WRITE_ID 3
@@ -54,14 +55,13 @@ int write = disastrOS_semOpen(WRITE_ID,1);
 
 
 
- for(int i=0; i<BUFF_SIZE*2; i++){
+ for(int i=0; i<ITERATION; i++){
 
     if(i%2==0)  f_producer(consumer,producer,read,write);
     else f_consumer(consumer,producer,read,write);
 }
 
 
-  printf("Sono il processo %d, e la mia variabile test ",disastrOS_getpid());
   printf("PID: %d, terminating\n", disastrOS_getpid());
 
   for (int i=0; i<(disastrOS_getpid()+1); ++i){

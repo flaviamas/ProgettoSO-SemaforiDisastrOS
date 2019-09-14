@@ -32,6 +32,7 @@
 #define DSOS_ERSEMCLOSE -15
 #define DSOS_ER_FREE -16
 #define DSOS_ER_DETACH -17
+#define DSOS_ER_INSERT -18
 
 
 // syscall numbers

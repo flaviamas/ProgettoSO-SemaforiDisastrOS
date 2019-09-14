@@ -18,12 +18,18 @@ void internal_semPost(){
     SemDescriptorPtr * ptr;
     sem->count+=1;
     if(sem->count <= 0) {
-       List_insert(&ready_list,ready_list.last,(ListItem*)running);
-       ptr = (SemDescriptorPtr*)List_detach(&sem->waiting_descriptors,sem->waiting_descriptors.first);
-       List_insert (&sem->descriptors, sem->descriptors.last,(ListItem*)ptr);
-       List_detach(&waiting_list, (ListItem*) ptr->descriptor->pcb);
-       running->status = Ready;
-       running = ptr->descriptor->pcb;
+    ptr = (SemDescriptorPtr*)List_detach(&sem->waiting_descriptors,sem->waiting_descriptors.first);
+
+    SemDescriptorPtr *aux = (SemDescriptorPtr*) List_insert (&sem->descriptors, sem->descriptors.last,(ListItem*)ptr);
+    if(!aux){
+
+        printf("List insert Error sempost \n");
+        running->syscall_retvalue = DSOS_ER_INSERT;
+    }
+    PCB* proc = ptr->descriptor->pcb;
+    proc->status = Ready;
+    PCB* process=(PCB*) List_detach(&waiting_list, (ListItem*) proc);
+    List_insert(&ready_list,ready_list.last,(ListItem*)process);
     }
 
     running->syscall_retvalue = 0;
