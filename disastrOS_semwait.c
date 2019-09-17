@@ -19,12 +19,12 @@ void internal_semWait(){
 
     sem->count-=1;
     if(sem->count < 0) {
-       SemDescriptorPtr *aux =  List_detach(&sem->descriptors,(ListItem*) ptr);
+       SemDescriptorPtr *aux = (SemDescriptorPtr*) List_detach(&sem->descriptors,(ListItem*) ptr);
        if(!aux){
            printf("List detach error in semwait");
         running->syscall_retvalue =DSOS_ER_DETACH;
     }
-        aux = List_insert(&sem->waiting_descriptors,sem->waiting_descriptors.last,(ListItem*) ptr);
+        aux = (SemDescriptorPtr*) List_insert(&sem->waiting_descriptors,sem->waiting_descriptors.last,(ListItem*) ptr);
         if(!aux){
             printf("List insert error in semwait");
         running->syscall_retvalue =DSOS_ER_INSERT;
